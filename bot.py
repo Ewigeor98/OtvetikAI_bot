@@ -1,4 +1,5 @@
 import os
+import sqlite3
 import telebot
 from groq import Groq
 
@@ -7,6 +8,37 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 bot = telebot.TeleBot(TOKEN)
 client = Groq(api_key=GROQ_API_KEY)
+conn = sqlite3.connect("users.db", check_same_thread=False)
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY,
+    requests_used INTEGER DEFAULT 0
+)
+""")
+conn.commit()
+REE_LIMIT = 10
+def get_requests_left(user_id): cursor.execute( "SELECT requests_used FROM users WHERE user_id = ?", (user_id,) ) user = cursor.fetchone()
+if user is None:
+    cursor.execute(
+        "INSERT INTO users (user_id, requests_used) VALUES (?, 0)",
+        (user_id,)
+    )
+    conn.commit()
+    return FREE_LIMIT
+
+return max(0, FREE_LIMIT - user[0])
+def use_request(user_id):
+    cursor.execute(
+        "INSERT OR IGNORE INTO users (user_id, requests_used) VALUES (?, 0)",
+        (user_id,)
+    )
+    cursor.execute(
+        "UPDATE users SET requests_used = requests_used + 1 WHERE user_id = ?",
+        (user_id,)
+    )
+    conn.commit()
 menu = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 menu.row("💬 Ответить на сообщение", "❤️ Поздравление")
 menu.row("✨ Перефразировать", "📝 Написать текст")
@@ -33,6 +65,12 @@ def congratulations(message):
 
 
 def make_congratulation(message):
+    if get_requests_left(message.from_user.id) <= 0:
+    bot.reply_to(
+        message,
+        "🔒 Бесплатные запросы закончились."
+    )
+    return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
@@ -52,6 +90,7 @@ def make_congratulation(message):
             ]
         )
         bot.reply_to(message, response.choices[0].message.content)
+        use_request(message.from_user.id)
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось создать поздравление. Попробуй ещё раз.")
@@ -66,6 +105,12 @@ def reply_to_message(message):
 
 
 def make_reply(message):
+    if get_requests_left(message.from_user.id) <= 0:
+    bot.reply_to(
+        message,
+        "🔒 Бесплатные запросы закончились."
+    )
+    return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
@@ -86,6 +131,7 @@ def make_reply(message):
             ]
         )
         bot.reply_to(message, response.choices[0].message.content)
+        use_request(message.from_user.id)
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось составить ответ. Попробуй ещё раз.")
@@ -100,6 +146,12 @@ def rephrase_text(message):
 
 
 def make_rephrase(message):
+    if get_requests_left(message.from_user.id) <= 0:
+    bot.reply_to(
+        message,
+        "🔒 Бесплатные запросы закончились."
+    )
+    return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
@@ -120,6 +172,7 @@ def make_rephrase(message):
             ]
         )
         bot.reply_to(message, response.choices[0].message.content)
+        use_request(message.from_user.id)
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось перефразировать текст. Попробуй ещё раз.")
@@ -134,6 +187,12 @@ def write_text(message):
 
 
 def make_text(message):
+    if get_requests_left(message.from_user.id) <= 0:
+    bot.reply_to(
+        message,
+        "🔒 Бесплатные запросы закончились."
+    )
+    return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
@@ -153,6 +212,7 @@ def make_text(message):
             ]
         )
         bot.reply_to(message, response.choices[0].message.content)
+        use_request(message.from_user.id)
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось написать текст. Попробуй ещё раз.")
