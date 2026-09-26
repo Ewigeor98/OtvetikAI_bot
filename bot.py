@@ -22,7 +22,39 @@ def start(message):
         reply_markup=menu
     )
 
+@bot.message_handler(func=lambda message: message.text == "❤️ Поздравление")
+def congratulations(message):
+    msg = bot.reply_to(
+        message,
+        "❤️ Кого будем поздравлять и с каким праздником?\n\n"
+        "Например: маму с днём рождения"
+    )
+    bot.register_next_step_handler(msg, make_congratulation)
 
+
+def make_congratulation(message):
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Ты «Ответик». Напиши красивое, тёплое и естественное "
+                        "поздравление на русском языке по просьбе пользователя. "
+                        "Выдай только готовый текст поздравления."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message.text
+                }
+            ]
+        )
+        bot.reply_to(message, response.choices[0].message.content)
+    except Exception as e:
+        print("AI ERROR:", repr(e), flush=True)
+        bot.reply_to(message, "😔 Не получилось создать поздравление. Попробуй ещё раз.")
 @bot.message_handler(func=lambda message: True)
 def answer(message):
     try:
