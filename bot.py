@@ -71,11 +71,11 @@ def congratulations(message):
 
 def make_congratulation(message):
     if get_requests_left(message.from_user.id) <= 0:
-    bot.reply_to(
-        message,
-        "🔒 Бесплатные запросы закончились."
-    )
-    return
+        bot.reply_to(
+            message,
+            "🔒 Бесплатные запросы закончились."
+        )
+        return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
