@@ -18,6 +18,10 @@ def answer(message):
         f"Я получил твой вопрос:\n{message.text}\n\n🤖 Скоро я научусь отвечать с помощью ИИ!"
     )
 
-print("Bot started")
-bot.infinity_polling()
-# redeploy
+print("Bot started", flush=True)
+
+try:
+    bot.infinity_polling(skip_pending=True)
+except Exception as e:
+    print("BOT ERROR:", repr(e), flush=True)
+    raise
