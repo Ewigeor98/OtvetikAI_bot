@@ -32,8 +32,8 @@ if user is None:
     )
     conn.commit()
     return FREE_LIMIT
+
 return max(0, FREE_LIMIT - user[0])
-def use_request(user_id):
     cursor.execute(
         "INSERT OR IGNORE INTO users (user_id, requests_used) VALUES (?, 0)",
         (user_id,)
