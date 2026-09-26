@@ -50,8 +50,6 @@ def answer(message):
             message,
             "😔 Не получилось получить ответ. Попробуй ещё раз чуть позже."
         )
-
-
 print("Bot started", flush=True)
-
 bot.infinity_polling(skip_pending=True)
+
