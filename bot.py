@@ -18,31 +18,31 @@ CREATE TABLE IF NOT EXISTS users (
 )
 """)
 conn.commit()
-REE_LIMIT = 10
-def get_requests_left(user_id): 
-    cursor.execute( 
+FREE_LIMIT = 10
+def get_requests_left(user_id):
+    cursor.execute(
         "SELECT requests_used FROM users WHERE user_id = ?",
         (user_id,)
     ) 
     user = cursor.fetchone()
-if user is None:
-    cursor.execute(
-        "INSERT INTO users (user_id, requests_used) VALUES (?, 0)",
-        (user_id,)
-    )
-    conn.commit()
-    return FREE_LIMIT
+    if user is None:
+        cursor.execute(
+            "INSERT INTO users (user_id, requests_used) VALUES (?, 0)",
+            (user_id,)
+        )
+        conn.commit()
+        return FREE_LIMIT
 
-return max(0, FREE_LIMIT - user[0])
+    return max(0, FREE_LIMIT - user[0])
 def use_request(user_id):
-    сursor.execute(
+    cursor.execute(
         "INSERT OR IGNORE INTO users (user_id, requests_used) VALUES (?, 0)",
-        (user_id,)
+        (user_id,) 
     )
     cursor.execute(
         "UPDATE users SET requests_used = requests_used + 1 WHERE user_id = ?",
         (user_id,)
-    )
+    ) 
     conn.commit()
 menu = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
 menu.row("💬 Ответить на сообщение", "❤️ Поздравление")
