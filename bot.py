@@ -19,7 +19,12 @@ CREATE TABLE IF NOT EXISTS users (
 """)
 conn.commit()
 REE_LIMIT = 10
-def get_requests_left(user_id): cursor.execute( "SELECT requests_used FROM users WHERE user_id = ?", (user_id,) ) user = cursor.fetchone()
+def get_requests_left(user_id): 
+    cursor.execute( 
+        "SELECT requests_used FROM users WHERE user_id = ?",
+        (user_id,)
+    ) 
+    user = cursor.fetchone()
 if user is None:
     cursor.execute(
         "INSERT INTO users (user_id, requests_used) VALUES (?, 0)",
