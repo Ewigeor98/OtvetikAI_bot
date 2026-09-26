@@ -230,6 +230,10 @@ def make_text(message):
         )
         bot.reply_to(message, response.choices[0].message.content)
         use_request(message.from_user.id)
+        bot.send_message(
+            message.chat.id,
+            f"🎁 Осталось бесплатных запросов: {get_requests_left(message.from_user.id)} из {FREE_LIMIT}"
+        )
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось написать текст. Попробуй ещё раз.")
