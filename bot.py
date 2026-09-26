@@ -124,9 +124,18 @@ def reply_to_message(message):
 
 def make_reply(message):
     if get_requests_left(message.from_user.id) <= 0:
+        buy_menu = telebot.types.InlineKeyboardMarkup()
+        buy_button = telebot.types.InlineKeyboardButton(
+            "💳 Купить доступ",
+            callback_data="buy_access"
+        )
+        buy_menu.add(buy_button)
         bot.reply_to(
             message,
-            "🔒 Бесплатные запросы закончились."
+            "🔒 Бесплатные запросы закончились.\n\n"
+            "⭐️ Безлимитный доступ на 30 дней — 199 ₽\n\n"
+            "Нажми кнопку ниже, чтобы продолжить пользоваться «Ответиком» 👇",
+            reply_markup=buy_menu
         )
         return
     try:
@@ -169,9 +178,18 @@ def rephrase_text(message):
 
 def make_rephrase(message):
     if get_requests_left(message.from_user.id) <= 0:
+        buy_menu = telebot.types.InlineKeyboardMarkup()
+        buy_button = telebot.types.InlineKeyboardButton(
+            "💳 Купить доступ",
+            callback_data="buy_access"
+        )
+        buy_menu.add(buy_button)
         bot.reply_to(
             message,
-            "🔒 Бесплатные запросы закончились."
+            "🔒 Бесплатные запросы закончились.\n\n"
+            "⭐️ Безлимитный доступ на 30 дней — 199 ₽\n\n"
+            "Нажми кнопку ниже, чтобы продолжить пользоваться «Ответиком» 👇",
+            reply_markup=buy_menu
         )
         return
     try:
@@ -214,9 +232,18 @@ def write_text(message):
 
 def make_text(message):
     if get_requests_left(message.from_user.id) <= 0:
-       bot.reply_to(
-           message,
-           "🔒 Бесплатные запросы закончились."
+        buy_menu = telebot.types.InlineKeyboardMarkup()
+        buy_button = telebot.types.InlineKeyboardButton(
+            "💳 Купить доступ",
+            callback_data="buy_access"
+        )
+        buy_menu.add(buy_button)
+        bot.reply_to(
+            message,
+            "🔒 Бесплатные запросы закончились.\n\n"
+            "⭐️ Безлимитный доступ на 30 дней — 199 ₽\n\n"
+            "Нажми кнопку ниже, чтобы продолжить пользоваться «Ответиком» 👇",
+            reply_markup=buy_menu
        )
        return
     try:
