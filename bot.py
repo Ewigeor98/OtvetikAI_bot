@@ -55,6 +55,40 @@ def make_congratulation(message):
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось создать поздравление. Попробуй ещё раз.")
+@bot.message_handler(func=lambda message: message.text == "💬 Ответить на сообщение")
+def reply_to_message(message):
+    msg = bot.reply_to(
+        message,
+        "💬 Пришли мне сообщение, на которое нужно ответить.\n\n"
+        "Я составлю готовый ответ ✨"
+    )
+    bot.register_next_step_handler(msg, make_reply)
+
+
+def make_reply(message):
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Ты «Ответик». Пользователь присылает сообщение, "
+                        "на которое ему нужно ответить. Напиши вежливый, "
+                        "естественный и подходящий по смыслу ответ на русском языке. "
+                        "Выдай только готовый текст ответа."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message.text
+                }
+            ]
+        )
+        bot.reply_to(message, response.choices[0].message.content)
+    except Exception as e:
+        print("AI ERROR:", repr(e), flush=True)
+        bot.reply_to(message, "😔 Не получилось составить ответ. Попробуй ещё раз.")
 @bot.message_handler(func=lambda message: True)
 def answer(message):
     try:
