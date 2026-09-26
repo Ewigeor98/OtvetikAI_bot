@@ -7,7 +7,9 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 bot = telebot.TeleBot(TOKEN)
 client = Groq(api_key=GROQ_API_KEY)
-
+menu = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+menu.row("💬 Ответить на сообщение", "❤️ Поздравление")
+menu.row("✨ Перефразировать", "📝 Написать текст")
 
 @bot.message_handler(commands=["start"])
 def start(message):
@@ -16,7 +18,8 @@ def start(message):
         "👋 Привет! Я «Ответик» 🤖\n\n"
         "Я помогу написать сообщение, поздравление, объявление, "
         "вежливый ответ или переформулировать текст.\n\n"
-        "Просто напиши мне, что тебе нужно ✨"
+        "Просто напиши мне, что тебе нужно ✨",
+        reply_markup=menu
     )
 
 
