@@ -71,11 +71,20 @@ def congratulations(message):
 
 def make_congratulation(message):
     if get_requests_left(message.from_user.id) <= 0:
-        bot.reply_to(
-            message,
-            "🔒 Бесплатные запросы закончились."
-        )
-        return
+       buy_menu = telebot.types.InlineKeyboardMarkup()
+       buy_button = telebot.types.InlineKeyboardButton(
+           "💳 Купить доступ",
+           callback_data="buy_access"
+       )
+       buy_menu.add(buy_button)
+       bot.reply_to(
+           message,
+           "🔒 Бесплатные запросы закончились.\n\n"
+           "⭐️ Безлимитный доступ на 30 дней — 199 ₽\n\n"
+           "Нажми кнопку ниже, чтобы продолжить пользоваться «Ответиком» 👇",
+           reply_markup=buy_menu
+       )
+       return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
