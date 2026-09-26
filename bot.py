@@ -123,6 +123,39 @@ def make_rephrase(message):
     except Exception as e:
         print("AI ERROR:", repr(e), flush=True)
         bot.reply_to(message, "😔 Не получилось перефразировать текст. Попробуй ещё раз.")
+@bot.message_handler(func=lambda message: message.text == "📝 Написать текст")
+def write_text(message):
+    msg = bot.reply_to(
+        message,
+        "📝 Расскажи, какой текст тебе нужно написать.\n\n"
+        "Например: объявление о продаже машины или сообщение клиенту."
+    )
+    bot.register_next_step_handler(msg, make_text)
+
+
+def make_text(message):
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "Ты «Ответик». Напиши готовый текст по просьбе пользователя "
+                        "на русском языке. Текст должен быть грамотным, естественным "
+                        "и подходить под ситуацию. Выдай только готовый текст."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": message.text
+                }
+            ]
+        )
+        bot.reply_to(message, response.choices[0].message.content)
+    except Exception as e:
+        print("AI ERROR:", repr(e), flush=True)
+        bot.reply_to(message, "😔 Не получилось написать текст. Попробуй ещё раз.")
 @bot.message_handler(func=lambda message: True)
 def answer(message):
     try:
