@@ -244,8 +244,8 @@ def make_text(message):
             "⭐️ Безлимитный доступ на 30 дней — 199 ₽\n\n"
             "Нажми кнопку ниже, чтобы продолжить пользоваться «Ответиком» 👇",
             reply_markup=buy_menu
-       )
-       return
+        )
+        return
     try:
         response = client.chat.completions.create(
             model="openai/gpt-oss-120b",
