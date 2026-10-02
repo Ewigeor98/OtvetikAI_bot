@@ -302,8 +302,9 @@ def answer(message):
         bot.reply_to(
             message,
             "😔 Не получилось получить ответ. Попробуй ещё раз чуть позже."
-
-     @bot.callback_query_handler(func=lambda call: call.data == "buy_access") 
+        )
+    
+    @bot.callback_query_handler(func=lambda call: call.data == "buy_access") 
      def buy_access(call):
          prices = [telebot.types.LabeledPrice(label="Доступ на 30 дней", amount=100)]
                 
