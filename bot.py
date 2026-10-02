@@ -305,24 +305,24 @@ def answer(message):
         )
     
     @bot.callback_query_handler(func=lambda call: call.data == "buy_access") 
-     def buy_access(call):
-         prices = [telebot.types.LabeledPrice(label="Доступ на 30 дней", amount=100)]
+    def buy_access(call):
+        prices = [telebot.types.LabeledPrice(label="Доступ на 30 дней", amount=100)]
                 
-         bot.send_invoice(
-             call.message.chat.id,
-             title="⭐️ Ответик — безлимит на 30 дней",
-             description="Безлимитный доступ ко всем функциям бота на 30 дней",
-             invoice_payload="access_30_days",
-             provider_token="",
-             currency="XTR",
-             prices=prices
+        bot.send_invoice(
+            call.message.chat.id,
+            title="⭐️ Ответик — безлимит на 30 дней",
+            description="Безлимитный доступ ко всем функциям бота на 30 дней",
+            invoice_payload="access_30_days",
+            provider_token="",
+            currency="XTR",
+            prices=prices
         )
 
-@bot.pre_checkout_query_handler(func=lambda query: True)
-def process_pre_checkout_query(pre_checkout_query):
-    bot.answer_pre_checkout_query(
-        pre_checkout_query.id,
-        ok=True
+    @bot.pre_checkout_query_handler(func=lambda query: True)
+    def process_pre_checkout_query(pre_checkout_query):
+        bot.answer_pre_checkout_query(
+            pre_checkout_query.id,
+            ok=True
     )
 
 print("Bot started", flush=True)
